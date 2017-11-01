@@ -33,23 +33,23 @@ class App extends Component
 class AllUsers extends Component {
     constructor(props){
         super(props);
-        this.state = {size: 2}
+        this.state = {size: 3}
         let userarray=[];
         //let firstnames userarray.map((firstname
         let firstnames=[1,2,3];
         let arrayemail=[3,2,1];
     }
     render(){
-            let rows = [];
-            for (var i = 0; i < this.state.size; i++){
-                let rowID = `row${i}`
-                let cell = []
-                for (var idx = 0; idx < this.state.size; idx++){
-                    let cellID = `cell${i}-${idx}`
-                    cell.push(<td key={cellID} id={cellID}>{this.firstnames[idx]+" "+this.lastnames[idx]}</td>)
-                }
-                rows.push(<tr key={i} id={rowID}>{cell}</tr>)
+        let rows = [];
+        for (var i = 0; i < 2; i++){
+            let rowID = `row${i}`
+            let cell = []
+            for (var idx = 0; idx < 2; idx++){
+                let cellID = `cell${i}-${idx}`
+                cell.push(<td key={cellID} id={cellID}>{cellID}</td>)
             }
+            rows.push(<tr key={i} id={rowID}>{cell}</tr>)
+        }
             return(
                 <div className="container">
                     <div className="row">
