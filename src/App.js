@@ -13,7 +13,6 @@ class App extends Component
 
     render()
     {
-
         return (
             <div class="App">
                 {/*<header className="App-header">*/}
@@ -31,14 +30,29 @@ class App extends Component
 }
 
 class AllUsers extends Component {
+
     constructor(props){
         super(props);
         this.state = {size: 2}
-        let userarray=[];
+        this.userarray = [];
         //let firstnames userarray.map((firstname
-        let firstnames=[1,2,3];
-        let arrayemail=[3,2,1];
+        this.firstnames=[1,2,3];
+        this.arrayemail=[3,2,1];
     }
+
+    componentDidMount()
+    {
+        fetch('/users/')
+            .then(response=>
+            {
+                this.userarray = response.json();
+            })
+            .catch(error=>
+            {
+                console.log(error);
+            });
+    }
+
     render(){
             let rows = [];
             for (var i = 0; i < this.state.size; i++){
@@ -74,15 +88,7 @@ class HomeScreen extends Component
 
     componentDidMount()
     {
-        fetch('/users/')
-            .then(response=>
-            {
-                this.data = response.json();
-            })
-            .catch(error=>
-            {
-                console.log(error);
-            });
+
     }
 
     render()
