@@ -23,6 +23,7 @@ class App extends Component
     {
         if(this.state.view == "home")
         {
+            console.log("RENDERING SOMETHING");
             return (
                 <div class="App">
                     {/*<header className="App-header">*/}
