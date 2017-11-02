@@ -1,15 +1,33 @@
-//1080437453033-f5i9agarlv6j82sdq6bqnavermq2stva.apps.googleusercontent.com
+const express = require('express');
+const path = require('path');
+// const generatePassword = require('password-generator');
 
+const app = express();
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// // Put all API endpoints under '/api'
+// app.get('/api/passwords', (req, res) => {
+//   const count = 5;
+//
+//   // Generate some passwords
+//   const passwords = Array.from(Array(count).keys()).map(i =>
+//     generatePassword(12, false)
+//   )
+//
+//   // Return them as json
+//   res.json(passwords);
+//
+//   console.log(`Sent ${count} passwords`);
+// });
 
 //App Globals=================================================
-const express = require('express');
 var fetch = require('node-fetch');
-const app = express();
 var router = express.Router();
 const port = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
-const path = require('path');
 
 //====================================== Google APIs====================================================================
 var fs = require('fs');
@@ -25,8 +43,10 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-    if (err) {
+fs.readFile('client_secret.json', function processClientSecrets(err, content)
+{
+    if (err)
+    {
         console.log('Error loading client secret file: ' + err);
         return;
     }
@@ -42,7 +62,8 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
+function authorize(credentials, callback)
+{
     var clientSecret = credentials.installed.client_secret;
     var clientId = credentials.installed.client_id;
     var redirectUrl = credentials.installed.redirect_uris[0];
@@ -50,10 +71,13 @@ function authorize(credentials, callback) {
     var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
     // Check if we have previously stored a token.
-    fs.readFile(TOKEN_PATH, function(err, token) {
-        if (err) {
+    fs.readFile(TOKEN_PATH, function (err, token)
+    {
+        if (err)
+        {
             getNewToken(oauth2Client, callback);
-        } else {
+        } else
+        {
             oauth2Client.credentials = JSON.parse(token);
             callback(oauth2Client);
         }
@@ -68,7 +92,8 @@ function authorize(credentials, callback) {
  * @param {getEventsCallback} callback The callback to call with the authorized
  *     client.
  */
-function getNewToken(oauth2Client, callback) {
+function getNewToken(oauth2Client, callback)
+{
     var authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: SCOPES
@@ -78,10 +103,13 @@ function getNewToken(oauth2Client, callback) {
         input: process.stdin,
         output: process.stdout
     });
-    rl.question('Enter the code from that page here: ', function(code) {
+    rl.question('Enter the code from that page here: ', function (code)
+    {
         rl.close();
-        oauth2Client.getToken(code, function(err, token) {
-            if (err) {
+        oauth2Client.getToken(code, function (err, token)
+        {
+            if (err)
+            {
                 console.log('Error while trying to retrieve access token', err);
                 return;
             }
@@ -97,11 +125,15 @@ function getNewToken(oauth2Client, callback) {
  *
  * @param {Object} token The token to store to disk.
  */
-function storeToken(token) {
-    try {
+function storeToken(token)
+{
+    try
+    {
         fs.mkdirSync(TOKEN_DIR);
-    } catch (err) {
-        if (err.code != 'EEXIST') {
+    } catch (err)
+    {
+        if (err.code != 'EEXIST')
+        {
             throw err;
         }
     }
@@ -114,7 +146,8 @@ function storeToken(token) {
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listEvents(auth) {
+function listEvents(auth)
+{
     var calendar = google.calendar('v3');
     calendar.events.list({
         auth: auth,
@@ -123,17 +156,22 @@ function listEvents(auth) {
         maxResults: 10,
         singleEvents: true,
         orderBy: 'startTime'
-    }, function(err, response) {
-        if (err) {
+    }, function (err, response)
+    {
+        if (err)
+        {
             console.log('The API returned an error: ' + err);
             return;
         }
         var events = response.items;
-        if (events.length == 0) {
+        if (events.length == 0)
+        {
             console.log('No upcoming events found.');
-        } else {
+        } else
+        {
             console.log('Upcoming 10 events:');
-            for (var i = 0; i < events.length; i++) {
+            for (var i = 0; i < events.length; i++)
+            {
                 var event = events[i];
                 var start = event.start.dateTime || event.start.date;
                 console.log('%s - %s', start, event.summary);
@@ -141,6 +179,7 @@ function listEvents(auth) {
         }
     });
 }
+
 //======================================================================================================================
 
 //Firebase
@@ -238,9 +277,9 @@ class User
     isFriend(friendID)
     {
         let fID = friendID.toLowerCase();
-        for(let friend of this.friendUIDS)
+        for (let friend of this.friendUIDS)
         {
-            if(friend === fID)
+            if (friend === fID)
             {
                 return true;
             }
@@ -296,9 +335,9 @@ class User
     toString()
     {
         let retval = `${this.username}\n${this.email}\n`;
-        for(let friend of this.friendUIDS)
+        for (let friend of this.friendUIDS)
         {
-            retval+=friend+"\n";
+            retval += friend + "\n";
         }
         return retval;
     }
@@ -306,12 +345,12 @@ class User
 
     getAppointment(date)
     {
-        return new Promise((resolve, reject)=>
+        return new Promise((resolve, reject) =>
         {
             console.log("Getting: " + date);
             let retrieved = this.appointments.get(date);
 
-            if(retrieved === undefined)
+            if (retrieved === undefined)
             {
                 reject("Appointment Not Yet Created");
             }
@@ -340,7 +379,7 @@ class Appointment
 
         this.parties = [];
 
-        for(let party of parties)
+        for (let party of parties)
         {
             this.addParty(user, party);
         }
@@ -375,7 +414,7 @@ class Appointment
 
     addParty(user, friendID)
     {
-        if(user.isFriend(friendID))
+        if (user.isFriend(friendID))
         {
             this.parties.push(friendID);
         }
@@ -450,22 +489,22 @@ function appointmentsOverlap(start1, end1, start2, end2)
     let s2 = start2.getTime();
     let e2 = end2.getTime();
 
-    if(s1 < e2 || s2 < e1)
+    if (s1 < e2 || s2 < e1)
         return true;
     else
         return false;
 }
 
 router.route('/users/:username/appointments/:month')
-    .get((req, res)=>
+    .get((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((user)=>
+            .then((user) =>
             {
                 let monthAppointments = [];
-                for(let appointment of user.getAllAppointments())
+                for (let appointment of user.getAllAppointments())
                 {
-                    if(appointment.getMonth() == (req.params.month-1))
+                    if (appointment.getMonth() == (req.params.month - 1))
                         monthAppointments.push(appointment);
                     else
                         console.log("Not IN MONTH");
@@ -473,30 +512,30 @@ router.route('/users/:username/appointments/:month')
 
                 res.send(JSON.stringify(monthAppointments));
             })
-            .catch((message)=>
+            .catch((message) =>
             {
-                res.send("USER DOES NOT EXIST"+message);
+                res.send("USER DOES NOT EXIST" + message);
             });
     });
 
 function getThisMonths(user)
 {
-    return new Promise((resolve, reject)=>
+    return new Promise((resolve, reject) =>
     {
         let today = new Date();
         console.log("Today's month is: " + today.getUTCMonth());
 
         let thisMonths = [];
 
-        for(let appointment of user.getAllAppointments())
+        for (let appointment of user.getAllAppointments())
         {
-            if(appointment.getMonth() == (today.getUTCMonth()))
+            if (appointment.getMonth() == (today.getUTCMonth()))
                 thisMonths.push(appointment);
             else
                 console.log("Not IN MONTH");
         }
 
-        if(thisMonths.empty())
+        if (thisMonths.empty())
         {
             reject("No Appointments this Month");
         }
@@ -508,143 +547,146 @@ function getThisMonths(user)
 }
 
 router.route('/users/:username/this_month/')
-    .get((req, res)=>
+    .get((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((user)=>
+            .then((user) =>
             {
                 getThisMonths(user)
-                    .then((appointments)=>
+                    .then((appointments) =>
                     {
                         res.send(JSON.stringify(appointments));
                     })
-                    .catch((error)=>{res.send(""+error)});
+                    .catch((error) =>
+                    {
+                        res.send("" + error)
+                    });
             })
-            .catch((message)=>
+            .catch((message) =>
             {
-                res.send("USER DOES NOT EXIST"+message);
+                res.send("USER DOES NOT EXIST" + message);
             });
     });
 
 router.route('/users/:username/appointments/')
-    .get((req, res)=>
+    .get((req, res) =>
     {
         // res.sendFile('/dist/html/appointments.html', {root:'.'}, ()=>{console.log("Want to Add a New Appointment");});
         // Commenting out this part so that server may provide HTML content
         getUserFromMap(req.params.username)
-            .then((user)=>
+            .then((user) =>
             {
                 let appointments = [];
-                for(let appointment of user.getAllAppointments())
+                for (let appointment of user.getAllAppointments())
                 {
                     appointments.push(appointment);
                 }
 
                 res.send(JSON.stringify(appointments));
             })
-            .catch((message)=>
+            .catch((message) =>
             {
-                res.send("USER DOES NOT EXIST"+message);
+                res.send("USER DOES NOT EXIST" + message);
             });
     })
-    .post((req, res)=>
+    .post((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((user)=>
+            .then((user) =>
             {
                 let sDate = new Date(req.body.startDate);
                 let eDate = new Date(req.body.endDate);
                 user.getAppointment(sDate.toString())
-                    .then((appointment)=>
+                    .then((appointment) =>
                     {
                         let newAppointment = new Appointment(user, req.body.place, req.body.parties, sDate, eDate, req.body.description);
                         // user.addAppointment(newAppointment);
 
                         //Check whether appointments span same hours.
-                        if(appointmentsOverlap(sDate, eDate, appointment.getStartDate(), appointment.getEndDate()))
+                        if (appointmentsOverlap(sDate, eDate, appointment.getStartDate(), appointment.getEndDate()))
                             res.send("Cannot Create Appointment. Time Slot Already Taken.");
                         else
                             user.addAppointment(newAppointment);
                     })
-                    .catch((error)=>
+                    .catch((error) =>
                     {
                         let newAppointment = new Appointment(user, req.body.place, req.body.parties, sDate, eDate, req.body.description);
                         user.addAppointment(newAppointment);
-                        res.send(error+"\nCreating New Appointment.");
+                        res.send(error + "\nCreating New Appointment.");
                     });
             })
-            .catch((message)=>
+            .catch((message) =>
             {
-                res.send("USER DOES NOT EXIST"+message);
+                res.send("USER DOES NOT EXIST" + message);
             });
     })
-    .put((req, res)=>
+    .put((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((user)=>
+            .then((user) =>
             {
                 let sDate = new Date(req.body.startDate);
                 let eDate = new Date(req.body.endDate);
                 user.getAppointment(sDate.toString())
-                    .then((appointment)=>
+                    .then((appointment) =>
                     {
                         let newAppointment = new Appointment(user, req.body.place, req.body.parties, sDate, eDate, req.body.description);
                         user.addAppointment(newAppointment);
                         res.send("Changes to Appointment Successfully Saved.");
                     })
-                    .catch((error)=>
+                    .catch((error) =>
                     {
                         res.send("Appointment Does Not Exist. You May POST a New Appointment if You Wish.");
                     });
             })
-            .catch((message)=>
+            .catch((message) =>
             {
-                res.send("USER DOES NOT EXIST"+message);
+                res.send("USER DOES NOT EXIST" + message);
             });
     })
-    .delete((req, res)=>
+    .delete((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((user)=>
+            .then((user) =>
             {
                 let sDate = new Date(req.body.startDate);
                 user.getAppointment(sDate.toString())
-                    .then((appointment)=>
+                    .then((appointment) =>
                     {
                         user.removeAppointment();
                         res.send("Appointment Successfully Removed.");
                     })
-                    .catch((error)=>
+                    .catch((error) =>
                     {
                         res.send("Cannot Remove Unexistent Appointment.");
                     });
             })
-            .catch((message)=>
+            .catch((message) =>
             {
-                res.send("USER DOES NOT EXIST"+message);
+                res.send("USER DOES NOT EXIST" + message);
             });
     });
 
 router.route('/users/')
-    .get((req, res)=>
+    .get((req, res) =>
     {
         // res.sendFile('dist/html/login.html', {root:'.'}, ()=>{console.log("Want Users");});
         let retval = [];
-        for(let userObject of users.values())
+        for (let userObject of users.values())
         {
             retval.push(userObject.makeSerializable());
         }
 
         res.send(JSON.stringify(retval));
     })
-    .post((req, res)=>
+    .post((req, res) =>
     {
         getUserFromMap(req.body.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
-                res.send(retrieved.getUserName()+" already exists. Please choose a different username.");
+                res.send(retrieved.getUserName() + " already exists. Please choose a different username.");
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 let newUser = new User(req.body.name, req.body.lastName, req.body.username, req.body.email);
                 users.set(req.body.username.toLowerCase(), newUser);
@@ -659,28 +701,28 @@ router.route('/users/')
 
 //=========================== Routing Simple Get and Delete ======================================
 router.route('/users/:username/')
-    .get((req, res)=>
+    .get((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
                 res.send(JSON.stringify(retrieved.makeSerializable()));
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 res.send(error);
             })
     })
-    .delete((req, res)=>
+    .delete((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
                 users.delete(retrieved.getUserName().toLowerCase());
                 res.send(`Successfully deleted ${retrieved.getUserName()}`);
                 deleteUserFromDatabase(retrieved);
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 res.send(error);
             });
@@ -690,16 +732,16 @@ router.route('/users/:username/')
 
 //============================== Routing with username and Email ===================================
 router.route('/users/:username/email')
-    .put((req, res)=>
+    .put((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
                 retrieved.setEmail(req.body.email);
-                res.send("Successfully changed user's email\n"+retrieved.toString()+"\n");
+                res.send("Successfully changed user's email\n" + retrieved.toString() + "\n");
                 saveUserToDatabase(retrieved);
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 res.send(error);
             });
@@ -707,27 +749,30 @@ router.route('/users/:username/email')
 //================================================================================================
 
 router.route('/')
-    .get((req, res)=>
+    .get((req, res) =>
     {
-        res.sendFile('/dist/html/home.html', {root:'.'}, ()=>{console.log("Home Page loaded successfully!");});
+        res.sendFile('/dist/html/home.html', {root: '.'}, () =>
+        {
+            console.log("Home Page loaded successfully!");
+        });
     });
 
 
 //Routing with username, and friendID===============================================================
 router.route('/users/:username/friends/:friendID')
-    .get((req, res)=>
+    .get((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
-                if(retrieved.isFriend(req.params.friendID))
+                if (retrieved.isFriend(req.params.friendID))
                 {
                     getUserFromMap(req.params.friendID)
-                        .then((friend)=>
+                        .then((friend) =>
                         {
                             res.send(JSON.stringify(friend.makeSerializable()));
                         })
-                        .catch((error)=>
+                        .catch((error) =>
                         {
                             res.send("User has no friend with username " + req.params.friendID);
                         });
@@ -737,66 +782,67 @@ router.route('/users/:username/friends/:friendID')
                     res.send(req.params.friendID + " is not a friend of " + retrieved.getUserName());
                 }
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 res.send("There was an error " + error);
             });
     })
-    .put((req, res)=>
+    .put((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
                 getUserFromMap(req.params.friendID)
-                    .then((friend)=>
+                    .then((friend) =>
                     {
                         retrieved.addFriendID(req.params.friendID);
                         saveUserToDatabase(retrieved);
-                        res.send("Added " + friend.getUserName() + " to "+ retrieved.getUserName()+"'s friends list");
+                        res.send("Added " + friend.getUserName() + " to " + retrieved.getUserName() + "'s friends list");
                     })
-                    .catch((error)=>
+                    .catch((error) =>
                     {
                         res.send("Friend was not found in users list. " + error);
                     })
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 res.send(error);
             });
     })
-    .delete((req, res)=>
+    .delete((req, res) =>
     {
         getUserFromMap(req.params.username)
-            .then((retrieved)=>
+            .then((retrieved) =>
             {
                 getUserFromMap(req.params.friendID)
-                    .then((friend)=>
+                    .then((friend) =>
                     {
                         //need to verify if still in friend's list to prevent unnecessary delete calls
                         retrieved.removeFriendID(req.params.friendID);
-                        res.send("Removed " + friend.getUserName() + " from "+ retrieved.getUserName()+"'s friends list");
+                        res.send("Removed " + friend.getUserName() + " from " + retrieved.getUserName() + "'s friends list");
                         saveUserToDatabase(retrieved);
                     })
-                    .catch((error)=>
+                    .catch((error) =>
                     {
                         res.send("Friend was not found in users list. " + error);
                     })
             })
-            .catch((error)=>
+            .catch((error) =>
             {
                 res.send(error);
             });
     });
+
 //================================================================================================
 
 
 function getUserFromMap(username)
 {
-    return new Promise((resolve, reject)=>
+    return new Promise((resolve, reject) =>
     {
         let retrieved = users.get(username.toLowerCase());
 
-        if(retrieved === undefined)
+        if (retrieved === undefined)
         {
             reject("User Not Found");
         }
@@ -812,14 +858,14 @@ function downloadFriends(user)
     let freindsRef = database.ref('friends').child(user.getUserName());
 
     freindsRef.once('value')
-        .then((snapshot)=>
+        .then((snapshot) =>
         {
             let friends = snapshot.val();
 
-            if(friends !== null)
+            if (friends !== null)
             {
                 // console.log("These are the friends I downloaded: " + friends);
-                for(let i in friends)
+                for (let i in friends)
                 {
                     // console.log("Friend: " + friends[i]);
                     user.addFriendID(friends[i]);
@@ -832,14 +878,14 @@ function downloadDataFromFireBase()
 {
     let reference = database.ref('users/');
     reference.once('value')
-        .then((snapshot)=>
+        .then((snapshot) =>
         {
             let data = snapshot.val();
             //console.log(data);
             users = new Map();
 
             let user;
-            for(let element in data)
+            for (let element in data)
             {
                 user = data[element];
                 let newUser = new User(user.name, user.lastName, user.username, user.email);
@@ -848,7 +894,7 @@ function downloadDataFromFireBase()
                 users.set(user.username, newUser);
             }
         })
-        .catch((error)=>
+        .catch((error) =>
         {
             console.log(error);
         });
@@ -857,7 +903,7 @@ function downloadDataFromFireBase()
 
 function getGoing()
 {
-    if(loadFromFireBase)
+    if (loadFromFireBase)
     {
         downloadDataFromFireBase();
     }
@@ -889,7 +935,7 @@ function addFriendListToDatabase(data)
     let node = database.ref().child('friends').child(data.getUserName());
     node.remove();
 
-    for(let friend of data.getFriendUIDS())
+    for (let friend of data.getFriendUIDS())
     {
         console.log("RETRIEVED THIS INFO: " + friend);
         database.ref().child('friends').child(data.getUserName()).push(friend);
@@ -903,7 +949,7 @@ function uploadUserAppointments(data, appointment)
     let node = database.ref().child('appointments').child(data.getUserName());
     node.remove();
 
-    for(let appointment of data.getAllAppointments())
+    for (let appointment of data.getAllAppointments())
     {
         console.log("RETRIEVED THIS INFO: " + appointment);
         database.ref().child('appointments').child(data.getUserName()).push(appointment.makeSerializable());
@@ -918,3 +964,13 @@ function deleteUserFromDatabase(user)
 }
 
 getGoing();
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+router.route('*')
+    .get((req, res) =>
+    {
+        res.sendFile(path.join(__dirname + '/client/build/index.html'));
+    });
+
+console.log(`Password generator listening on ${port}`);

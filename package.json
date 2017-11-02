@@ -1,12 +1,8 @@
 {
-  "name": "hw3",
+  "name": "rando",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
-  },
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.14.0",
@@ -16,8 +12,8 @@
     "nock": "^9.0.1",
     "node-fetch": "^1.7.1"
   },
-  "author": "",
-  "license": "ISC",
-  "keywords": [],
-  "description": ""
+  "scripts": {
+    "start": "node index.js",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+  }
 }
