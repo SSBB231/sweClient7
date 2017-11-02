@@ -53,6 +53,7 @@ class AllUsers extends Component {
     }
 
     componentDidMount() {
+
         fetch('/users/')
             .then(response => {
                 return response.json();
@@ -61,8 +62,8 @@ class AllUsers extends Component {
                 this.userarray = json;
                 console.log(this.userarray);
                 this.firstnames = this.userarray.map((user) => user.name);
-                console.log(this.firstnames);
 
+                this.setState({fetched: "true"});
             })
             .catch(error => {
                 console.log(error);
