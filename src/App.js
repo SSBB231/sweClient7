@@ -11,6 +11,14 @@ class App extends Component
         this.state = {view:"home"};
     }
 
+    changeToUsers()
+    {
+        this.setState((prevState, props)=>
+        {
+            return {view:"users", currentItem:"users"};
+        });
+    }
+
     render()
     {
         if(this.state.view == "home")
@@ -24,7 +32,7 @@ class App extends Component
                     {/*<p className="App-intro">*/}
                     {/*To get started, edit <code>src/App.js</code> and save to reload.*/}
                     {/*</p>*/}
-                    <HomeScreen/>
+                    <HomeScreen onClick={this.changeToUsers}/>
                 </div>
             );
         }
@@ -93,6 +101,7 @@ class HomeScreen extends Component
     constructor(props)
     {
         super(props);
+        this.props.onclick = this.props.
     }
 
     componentDidMount()
