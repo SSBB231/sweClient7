@@ -22,6 +22,7 @@ class App extends Component
                 {/*<p className="App-intro">*/}
                     {/*To get started, edit <code>src/App.js</code> and save to reload.*/}
                 {/*</p>*/}
+                <HomeScreen/>
                 <AllUsers/>
             </div>
         );
@@ -30,55 +31,63 @@ class App extends Component
 
 class AllUsers extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {size: 2}
         this.userarray = [];
         //let firstnames userarray.map((firstname
-        this.firstnames=[1,2,3];
-        this.arrayemail=[3,2,1];
+        this.firstnames = [1, 2, 3];
+        this.arrayemail = [3, 2, 1];
     }
 
-    componentDidMount()
-    {
+    componentDidMount() {
         fetch('/users/')
-            .then(response=>
-            {
-                this.userarray = response.json();
+            .then(response => {
+                return response.json();
             })
-            .catch(error=>
-            {
+            .then((json) => {
+                this.userarray = json;
+                console.log(this.userarray);
+                this.firstnames = this.userarray.map((user) => user.name);
+                console.log(this.firstnames);
+
+            })
+            .catch(error => {
                 console.log(error);
             });
+
     }
 
-    render(){
+    render() {
         let rows = [];
-        for (var i = 0; i < 2; i++){
+        for (var i = 0; i < 2; i++) {
             let rowID = `row${i}`
             let cell = []
-            for (var idx = 0; idx < 2; idx++){
+            for (var idx = 0; idx < 2; idx++) {
                 let cellID = `cell${i}-${idx}`
-                cell.push(<td key={cellID} id={cellID}>{cellID}</td>)
+                cell.push(<td key={cellID} id={cellID}>{this.firstnames[idx]}</td>)
+                console.log(this.firstnames);
             }
             rows.push(<tr key={i} id={rowID}>{cell}</tr>)
         }
-            return(
-                <div className="container">
-                    <div className="row">
-                        <div className="col s12 board">
-                            <table id="simple-board">
-                                <tbody>
-                                {rows}
-                                </tbody>
-                            </table>
-                        </div>
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col s12 board">
+                        <table id="simple-board">
+                            <tbody>
+                            {rows}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            )
-        }
+            </div>
+        )
+
+    }
 }
+
 class HomeScreen extends Component
 {
     constructor(props)
