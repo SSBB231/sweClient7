@@ -33,6 +33,7 @@ class App extends Component
                     {/*To get started, edit <code>src/App.js</code> and save to reload.*/}
                     {/*</p>*/}
                     <HomeScreen onClick={this.changeToUsers}/>
+                    <AllUsers/>
                 </div>
             );
         }
@@ -101,7 +102,6 @@ class HomeScreen extends Component
     constructor(props)
     {
         super(props);
-        this.props.onclick = this.props.
     }
 
     componentDidMount()
