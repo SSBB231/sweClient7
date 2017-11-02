@@ -77,7 +77,7 @@ class AllUsers extends Component {
     render() {
         let rows = [];
         let count = 0;
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < this.userarray.length/2; i++) {
             let rowID = `row${i}`
             let cell = []
 
