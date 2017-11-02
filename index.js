@@ -873,7 +873,7 @@ function getGoing()
 
     app.use(jsonParser);
     app.use('/', router);
-    app.use(express.static('client'));
+    app.use(express.static('client/build'));
     app.listen(port);
 }
 
