@@ -22,6 +22,7 @@ class App extends Component
                 {/*<p className="App-intro">*/}
                     {/*To get started, edit <code>src/App.js</code> and save to reload.*/}
                 {/*</p>*/}
+                <HomeScreen/>
                 <AllUsers/>
             </div>
         );
@@ -45,7 +46,12 @@ class AllUsers extends Component {
         fetch('/users/')
             .then(response=>
             {
-                this.userarray = response.json();
+                return response.json();
+            })
+            .then((json)=>
+            {
+                this.userarray = json;
+                console.log("The array:\n"+this.userarray);
             })
             .catch(error=>
             {
@@ -79,6 +85,7 @@ class AllUsers extends Component {
             )
         }
 }
+
 class HomeScreen extends Component
 {
     constructor(props)
