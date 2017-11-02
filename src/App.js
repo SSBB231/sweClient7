@@ -34,14 +34,14 @@ class App extends Component
                     {/*</p>*/}
                     <HomeScreen onClick={this.changeToUsers}/>
                     <AllUsers/>
-                    <AllAppointments/>
+                    <CelinesAppointments/>
                 </div>
             );
         }
     }
 }
 
-class AllAppointments extends Component {
+class CelinesAppointments extends Component {
 
     constructor(props) {
         super(props);
